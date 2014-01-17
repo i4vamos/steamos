@@ -4,11 +4,11 @@ Tailor your SteamOS to your needs
 
 Motivation
 ----------
-SteamOS is built on top of Debian - using a generic kernel which is trying to
-suit on as many hardware configurations as possible.
-The default `.config` contains almost 4200 compiled features in both the main
-binary and about 3000 additional modules.
-It's okay to have a Fiber Distributed Data Interface [#fddi]_ or Braille
+SteamOS is built on top of Debian - using a generic kernel which is configured
+to run out-of-the-box on as many hardware configurations as possible.
+The default `.config` file contains almost 4200 compiled features in both the main
+binary and about 3000 additional loadable modules (such as drivers).
+Generally it's okay to have a Fiber Distributed Data Interface [#fddi]_ or Braille
 [#braille]_ support in the Linux Kernel, but do you really need it for your
 SteamOS?
 Although it sometimes occurs that removing a feature will slightly speedup your
@@ -17,22 +17,22 @@ might help you to avoid (yet undiscovered) bugs or their exploitation.
 
 Introduction
 ------------
-We are working on a university project focusing on the variability in operating
-systems (mainly in the linux kernel).
+We are working on a university project focusing on variability in operating
+systems (mainly in the Linux kernel).
 Some parts of the tools have the ability of building a kernel configuration out
 of a number of source code points.
 In short the approach is performed in the following four steps:
 
-   1. recording executed kernel addresses while running your system in its
+   1. Recording executed kernel addresses while running your system in its
       default use case (using the built in function tracer [#ftrace]_)
-   2. translating them to code points in the kernel source
+   2. Translating them to code points in the kernel source
       (via binary debug information [#dwarf]_)
-   3. generating a logical expression out of their variability requirements
+   3. Generating a logical expression out of their variability requirements
       (analyzing the block and file preconditions)
-   4. solving the expression (using an external tool [#picosat]_ for the
+   4. Solving the expression (using an external tool [#picosat]_ for the
       satisfiability problem)
 
-For the adaption to SteamOS we did some (small) changes to the original tools
+To adapt the tools to SteamOS we did some (small) changes to the original tools
 published by the VAMOS project [#vamos]_.
 
 Although this approach could generate a perfect working kernel without any
@@ -73,18 +73,23 @@ Howto
         - linux-headers-3.10.11_3.10.11-1_amd64.deb
         - linux-libc-dev_3.10.11-1_amd64.deb
 
-    Next you should build the `undertaker-traceutil` from the attached *tailor*
-    (slightly modified for the use with debian based systems) by running `make`
-    in this directory.
+    Next you should build the `undertaker-traceutil` from the Github repository
+    [#github_] (slightly modified compared to the original research version
+    for the use with Debian based systems) by running `make` in this directory::
 
-    Transfer the whole *tailor* directory along whith the three debian packages
+        git clone https://github.com/i4vamos/steamos.git
+        cd steamos
+        make
+        cd ..
+
+    Transfer the whole *steamos* directory along whith the three Debian packages
     to the target (steam) machine.
 
 3.  Download the *Undertaker* tool and prepare the Linux kernel sources for the
     following steps.
 
     The *Undertaker* tool has a few dependencies to build (e.g. libboost).
-    If compilation fails on your machine and it's not obvious, which package
+    If compilation fails on your machine and it's not obvious which package
     might be missing, take a look at the project site [#vamos]_ where we also
     provide a copy-and-paste-able install command for all dependencies.
     If there's still a problem, don't hesitate to contact us.
@@ -111,14 +116,14 @@ Howto
     This might take a while to complete (up to a few hours).
 
 4.  Meanwhile you can prepare the target steam machine.
-    Since there is no *ssh-server* installed (per default), you may use a text
-    terminal(e.g. *Ctrl*+*Alt*+*F3*).
+    Since there is no *ssh-server* installed (by default), you may use a text
+    terminal (e.g. *Ctrl*+*Alt*+*F3*).
     First you have to install the new kernel by running ::
 
         sudo dpkg -i linux-*.deb
 
     Reboot the system and run the following command from inside the
-    copied *tailor* directory::
+    copied *steamos* directory::
 
         sudo ./undertaker-tracecontrol-prepare
 
@@ -137,31 +142,36 @@ Howto
     and continue bootup by pressing the `F10` key.
 
 5.  The bootup may take a bit longer than usual: this is due to the system
-    tracing. The file `/run/undertaker-trace.out` should contain a few thousand
-    lines with hexadecimal values (representing the called addresses).
+    collecting addresses. The file `/run/undertaker-trace.out` should contain
+    a few thousand lines with hexadecimal values (representing the called
+    addresses).
 
     Use your system as you would typically use it. The trace tool will record
     which functions have been called inside the kernel and log these addresses.
     **IMPORTANT:** At absolutely **no** point in time do we have access to
-    **any** data inside the kernel - it's only about addresses in the code!
+    **any personal data** inside the kernel - it's only about addresses in the
+    code!
 
-    After a sufficent run save a copy of `/run/undertaker-trace.out` and
-    transfer it back to your base system
+    After a sufficent time (something between 10 minutes and an hour) save a
+    copy of `/run/undertaker-trace.out` and transfer it back to your build
+    machine into the top level folder.
 
 6.  Once these steps have been completed, you can actually start to generate a
     kernel!
-    Make sure that the *tailor/lists* directory is available on the system.
+    Make sure that the *steamos/lists* directory is available on the system.
     Enter the following commands to start the analysis (using the binaries
     generated in step 2)::
 
         cd linux-source-3.10/
-        ../undertaker/tailor/undertaker-tailor -b ../lists/blacklist.steam \
-            -w ../lists/whitelist.steam -i ../lists/undertaker.ignore \
+        ../undertaker/tailor/undertaker-tailor \
+            -b ../steamos/lists/blacklist.steam \
+            -w ../steamos/lists/whitelist.steam \
+            -i ..steamos/lists/undertaker.ignore \
             -m models/x86.model -u ../undertaker/undertaker/undertaker -s . \
             -k debian/ -e vmlinux ../undertaker-trace.out > trace.config
 
     Since the non-ternary config items (mostly numbers and strings) cannot be
-    guessed well, they must be extract from the original config::
+    guessed well, they must be extracted from the original config::
 
         cat .config | grep -v "^#\|=y$\|=m" | sort -u >> tailor.config
 
@@ -183,14 +193,14 @@ Howto
 8.  Have fun!
 
 **Limitations**
-    - Depending on your system it could happen that the tools weren't able to
-      generate a solution. This is because due technical issues the model has
-      not a 100% accuracy (but almost!) and under some special circumstances it
-      won't get the right
+    - Depending on your system it could happen that the tools aren't able to
+      generate a solution. This is due to technical issues: the model doesn't
+      have a 100% accuracy (but almost!) and under some special circumstances it
+      won't get it right.
     - Some necessary features might be missing because of untraceable functions
       (or perhaps they aren't even generating traceable code). You can add them
       using the whitelist. To recognize such features it might be helpful to
-      take a look to the original configuration. Take special attention towards
+      take a look into the original configuration. Take special attention towards
       features involved in the early boot process.
     - Sadly, it cannot do magic. If your trace run didn't contain your complete
       usecase, some features **might** be missing. Especially different
@@ -207,3 +217,4 @@ Howto
     .. [#dwarf] http://dwarfstd.org/
     .. [#picosat] http://fmv.jku.at/picosat/
     .. [#vamos] http://vamos.informatik.uni-erlangen.de/trac/undertaker
+    .. [#github] http://github.com/i4vamos/steamos
