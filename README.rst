@@ -99,8 +99,7 @@ Howto
     Next, you need to prepare the previously downloaded Linux kernel source
     code. Our tools build a model which comprises information about the
     different dependencies between selectable features.
-    To build this model, change back into the Linux kernel directory and type
-    the following commands::
+    To build this model, type the following commands::
 
         PATH=$PATH:$(pwd)/undertaker/scripts/kconfig/:$(pwd)/undertaker/python/:$(pwd)/undertaker/undertaker/
         export PATH
