@@ -7,10 +7,10 @@ Bernhard Heinloth, Valentin Rothberg and Andreas Ruprecht, which allows you
 to generate a small Linux kernel configuration tailored to your specific use
 case.
 
-The tools were developed for a practical course with the VAMOS project [1] at
+The tools were developed for a practical course with the VAMOS project [1]_ at
 Friedrich-Alexander-University Erlangen-Nürnberg, and improved fro publications
-in the proceedings of the HotDep '12 workshop [2] and the NDSS 2013 conference
-[3]. On the project website [1] you can also find more papers describing the
+in the proceedings of the HotDep '12 workshop [2]_ and the NDSS 2013 conference
+[3]_. On the project website [1]_ you can also find more papers describing the
 undertaker tool and its variability model in greater detail.
 
 In this documentation we want to give an insight on the various steps required
@@ -47,7 +47,7 @@ many features turned off as possible, we end up with a kernel configuration
 containing a very small set of configuration options that are needed for the
 given use case.
 
-More details on the approach can also be found in [2] and [3].
+More details on the approach can also be found in [2]_ and [3]_.
 
 
 What do I need?
@@ -124,7 +124,7 @@ How do I use it?
   undertaker-trace.out in /run. You should now run your use case on the
   system, for example if you are tracing a LAMP server, you could now run a
   benchmark or generate some traffic to trigger the execution of relevant code
-  paths in the kernel. (see [2] or [3] for use cases we used)
+  paths in the kernel. (see [2]_ or [3]_ for use cases we used)
 
 - If you're confident that the collected traces are sufficient (i.e. if the
   output file '/run/undertaker-trace.out' doesn't grow anymore while still
@@ -199,11 +199,11 @@ Remarks on the approach
 - Our approach uses the assumption that the workload run during tracing is
   representative for the whole use case, in other words, the traces need to be
   "sufficiently complete". However, as can be seen in the evaluation section in
-  [3], we do not need to execute every single code path that is used in the
+  [3]_, we do not need to execute every single code path that is used in the
   target system. The results presented there show that a configuration obtained
   from a smaller sample scenario also provides full usability in the bigger
   scenario.
-- In both [2] and [3], we got comments from the reviewers who were concerned
+- In both [2]_ and [3]_, we got comments from the reviewers who were concerned
   about what might happen if you execute something on your tailored kernel which
   was not encountered during tracing, and if this might cause the kernel to
   crash.
@@ -215,7 +215,7 @@ Remarks on the approach
   interdependencies by the provided constraints for every feature) will leave
   no "loose ends" in the kernel that could lead to "sudden breaks" in the code,
   but will have the kernel in a consistent state. This is (in more detail) also
-  discussed in [3].  Of course we can not give guarantees for some completely
+  discussed in [3]_.  Of course we can not give guarantees for some completely
   different scenarios (e.g. tailoring a kernel for a LAMP server scenario and
   using it as a gaming machine), but a) this was not the goal of our approach,
   and b) should not lead to kernel crashes, but rather to errors handled and

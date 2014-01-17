@@ -128,7 +128,7 @@ Howto
         sudo ./undertaker-tracecontrol-prepare
 
     If you have no *grub* boot menu, you can change the names of your initial
-    ramdisk, for example::
+    ramdisk to swap them, for example::
 
         sudo mv initrd.img-3.10.11 initrd.img-3.10.11.org
         sudo mv initrd.img-3.10.11.ftrace initrd.img-3.10.11
@@ -148,11 +148,12 @@ Howto
 
     Use your system as you would typically use it. The trace tool will record
     which functions have been called inside the kernel and log these addresses.
+
     **IMPORTANT:** At absolutely **no** point in time do we have access to
     **any personal data** inside the kernel - it's only about addresses in the
     code!
 
-    After a sufficent time (something between 10 minutes and an hour) save a
+    After a sufficient time (something between 10 minutes and an hour) save a
     copy of `/run/undertaker-trace.out` and transfer it back to your build
     machine into the top level folder.
 
@@ -190,7 +191,14 @@ Howto
     generated one and find the missing or spurious features.
     You can add them to the white- or blacklist for default in- or exclusion.
 
-8.  Have fun!
+7.  Have fun!
+
+**Comments**
+    - During our adaption of the tools for SteamOS, we generated a config
+      on a system with a Core i7 processor and a Nvidia Titan graphics card.
+      The result can be found at [#config_paste]_. The number of features was
+      reduced from **4191** to only **616**, with everything still working
+      fine.
 
 **Limitations**
     - Depending on your system it could happen that the tools aren't able to
@@ -218,3 +226,4 @@ Howto
     .. [#picosat] http://fmv.jku.at/picosat/
     .. [#vamos] http://vamos.informatik.uni-erlangen.de/trac/undertaker
     .. [#github] http://github.com/i4vamos/steamos
+    .. [#config_paste] http://pastebin.com/23r64hYq
