@@ -15,6 +15,7 @@ Although it sometimes occurs that removing a feature will slightly speedup your
 system, this isn't the main goal. As shown before [#ndss13]_, this approach
 might help you to avoid (yet undiscovered) bugs or their exploitation.
 
+
 Introduction
 ------------
 We are working on a university project focusing on variability in operating
@@ -23,14 +24,14 @@ Some parts of the tools have the ability of building a kernel configuration out
 of a number of source code points.
 In short the approach is performed in the following four steps:
 
-   1. Recording executed kernel addresses while running your system in its
-      default use case (using the built in function tracer [#ftrace]_)
-   2. Translating them to code points in the kernel source
-      (via binary debug information [#dwarf]_)
-   3. Generating a logical expression out of their variability requirements
-      (analyzing the block and file preconditions)
-   4. Solving the expression (using an external tool [#picosat]_ for the
-      satisfiability problem)
+1. Recording executed kernel addresses while running your system in its
+   default use case (using the built in function tracer [#ftrace]_)
+2. Translating them to code points in the kernel source
+   (via binary debug information [#dwarf]_)
+3. Generating a logical expression out of their variability requirements
+   (analyzing the block and file preconditions)
+4. Solving the expression (using an external tool [#picosat]_ for the
+   satisfiability problem)
 
 To adapt the tools to SteamOS we did some (small) changes to the original tools
 published by the VAMOS project [#vamos]_.
@@ -38,6 +39,7 @@ published by the VAMOS project [#vamos]_.
 Although this approach could generate a perfect working kernel without any
 additional work, this is primarily supposed to be a helper tool to
 detect important features.
+
 
 Howto
 -----
@@ -167,7 +169,7 @@ Howto
         ../undertaker/tailor/undertaker-tailor \
             -b ../steamos/lists/blacklist.steam \
             -w ../steamos/lists/whitelist.steam \
-            -i ..steamos/lists/undertaker.ignore \
+            -i ../steamos/lists/undertaker.ignore \
             -m models/x86.model -u ../undertaker/undertaker/undertaker -s . \
             -k debian/ -e vmlinux ../undertaker-trace.out > trace.config
 
@@ -193,37 +195,45 @@ Howto
 
 7.  Have fun!
 
-**Comments**
-    - During our adaption of the tools for SteamOS, we generated a config
-      on a system with a Core i7 processor and a Nvidia Titan graphics card.
-      The result can be found at [#config_paste]_. The number of features was
-      reduced from **4191** to only **616**, with everything still working
-      fine.
 
-**Limitations**
-    - Depending on your system it could happen that the tools aren't able to
-      generate a solution. This is due to technical issues: the model doesn't
-      have a 100% accuracy (but almost!) and under some special circumstances it
-      won't get it right.
-    - Some necessary features might be missing because of untraceable functions
-      (or perhaps they aren't even generating traceable code). You can add them
-      using the whitelist. To recognize such features it might be helpful to
-      take a look into the original configuration. Take special attention towards
-      features involved in the early boot process.
-    - Sadly, it cannot do magic. If your trace run didn't contain your complete
-      usecase, some features **might** be missing. Especially different
-      hardware components should be tested.
+Comments
+--------
+During our adaption of the tools for SteamOS, we generated a config on a system
+with a Core i7 processor and a Nvidia Titan graphics card.
+The result can be found at [#config_paste]_. The number of features was reduced
+from **4191** to only **616**, with everything still working fine.
 
-**License**
-    See `LICENSE` for the **GNU GENERAL PUBLIC LICENSE**
 
-**References**
-    .. [#fddi] Default kernel config: `CONFIG_FDDI=y`
-    .. [#braille] Default kernel config: `CONFIG_A11Y_BRAILLE_CONSOLE=y`
-    .. [#ndss13] http://www4.cs.fau.de/Publications/2013/kurmus_13_ndss.pdf
-    .. [#ftrace] https://www.kernel.org/doc/Documentation/trace/ftrace.txt
-    .. [#dwarf] http://dwarfstd.org/
-    .. [#picosat] http://fmv.jku.at/picosat/
-    .. [#vamos] http://vamos.informatik.uni-erlangen.de/trac/undertaker
-    .. [#github] http://github.com/i4vamos/steamos
-    .. [#config_paste] http://pastebin.com/23r64hYq
+Limitations
+-----------
+- Depending on your system it could happen that the tools aren't able to
+  generate a solution. This is due to technical issues: the model doesn't have
+  a 100% accuracy (but almost!) and under some special circumstances it won't
+  get it right.
+- Some necessary features might be missing because of untraceable functions (or
+  perhaps they aren't even generating traceable code). You can add them using
+  the whitelist. To recognize such features it might be helpful to take a look
+  into the original configuration. Take special attention towards features
+  involved in the early boot process.
+- Sadly, it cannot do magic. If your trace run didn't contain your complete
+  usecase, some features **might** be missing. Especially different hardware
+  components should be tested.
+
+
+License
+-------
+See `LICENSE` for the **GNU GENERAL PUBLIC LICENSE**
+
+
+References
+----------
+
+.. [#fddi] Default kernel config: `CONFIG_FDDI=y`
+.. [#braille] Default kernel config: `CONFIG_A11Y_BRAILLE_CONSOLE=y`
+.. [#ndss13] http://www4.cs.fau.de/Publications/2013/kurmus_13_ndss.pdf
+.. [#ftrace] https://www.kernel.org/doc/Documentation/trace/ftrace.txt
+.. [#dwarf] http://dwarfstd.org/
+.. [#picosat] http://fmv.jku.at/picosat/
+.. [#vamos] http://vamos.informatik.uni-erlangen.de/trac/undertaker
+.. [#github] http://github.com/i4vamos/steamos
+.. [#config_paste] http://pastebin.com/23r64hYq

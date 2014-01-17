@@ -237,9 +237,9 @@ Known issues
 
 References
 ----------
-[1]: VAMOS: Variability Management in Operating Systems,
-     http://www4.cs.fau.de/Research/VAMOS/
-[2]: Automatic OS Kernel TCB Reduction by Leveraging Compile-Time
-     Configurability, HotDep '12, Hollywood, CA
-[3]: Attack Surface Metrics and Automated Compile-Time OS Kernel Tailoring,
-     NDSS '13, San Diego, CA
+.. [1] VAMOS: Variability Management in Operating Systems,
+       http://www4.cs.fau.de/Research/VAMOS/
+.. [2] Automatic OS Kernel TCB Reduction by Leveraging Compile-Time
+       Configurability, HotDep '12, Hollywood, CA
+.. [3] Attack Surface Metrics and Automated Compile-Time OS Kernel Tailoring,
+       NDSS '13, San Diego, CA
